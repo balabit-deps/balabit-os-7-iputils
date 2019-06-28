@@ -1,0 +1,36 @@
+From 1ef0e4c86d358c8e217b90686394196412e184d2 Mon Sep 17 00:00:00 2001
+From: Nathaniel White <nate@natexornate.com>
+Date: Fri, 3 Mar 2017 15:57:47 -0700
+Subject: [PATCH] traceroute6: Fix traceroute to IPv6 address
+
+Tracing to an IPv6 address was broken in 40fd68a784 when fixing tracing
+to a hostname. It correctly moved the assignment to after the memcpy
+into 'to', but that code path is only executed when tracing to a
+hostname. The fix just moves the assignment to after the code paths for
+filling out 'to' for both IPv6 addresses and hostnames.
+---
+ traceroute6.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+Index: iputils-20161105/traceroute6.c
+===================================================================
+--- iputils-20161105.orig/traceroute6.c
++++ iputils-20161105/traceroute6.c
+@@ -462,7 +462,6 @@ int main(int argc, char *argv[])
+ 		}
+ 
+ 		memcpy(to, result->ai_addr, sizeof *to);
+-		to->sin6_port = htons(port);
+ 		resolved_hostname = strdup(result->ai_canonname);
+ 		if (resolved_hostname == NULL) {
+ 			(void)fprintf(stderr,
+@@ -472,6 +471,9 @@ int main(int argc, char *argv[])
+ 		hostname = resolved_hostname;
+ 		freeaddrinfo(result);
+ 	}
++
++	to->sin6_port = htons(port);
++
+ 	firsthop = *to;
+ 	if (*++argv) {
+ 		datalen = atoi(*argv);

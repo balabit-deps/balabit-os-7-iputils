@@ -1,3 +1,11 @@
+iputils (3:20161105-1ubuntu3) bionic; urgency=medium
+
+  * debian/patches/git_after_free.patch,
+    debian/patches/git_routing_ipv6.patch:
+    - backport fixes for ipv6 routing commands not working (lp: #1798313)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 28 Jun 2019 13:05:23 +0200
+
 iputils (3:20161105-1ubuntu2) zesty; urgency=medium
 
   * Build-depend on sgmlspl without the :any, since this is now an Arch: all
